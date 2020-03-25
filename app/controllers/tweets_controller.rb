@@ -5,7 +5,7 @@ class TweetsController < ApplicationController
   def index
     @tweets = Tweet.all.includes(:user)
 
-    render json: @tweets
+    render json: @tweets, root: 'tweets'
   end
 
   # GET /tweets/1
