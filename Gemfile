@@ -27,7 +27,6 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
-  gem 'factory_bot_rails'
   gem 'pry'
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.5'
@@ -45,7 +44,6 @@ group :development do
   gem 'ordinare'
   gem 'overcommit', require: false
   gem 'rack-livereload', '~> 0.3.17'
-  gem 'rubocop', '~> 0.58.2', require: false
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console', '>= 3.3.0'
