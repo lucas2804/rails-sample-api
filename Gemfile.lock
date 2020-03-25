@@ -25,6 +25,11 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.0.3)
+    active_model_serializers (0.10.10)
+      actionpack (>= 4.1, < 6.1)
+      activemodel (>= 4.1, < 6.1)
+      case_transform (>= 0.2)
+      jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
     activejob (5.2.3)
       activesupport (= 5.2.3)
       globalid (>= 0.3.6)
@@ -43,6 +48,9 @@ GEM
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    acts_as_paranoid (0.6.3)
+      activerecord (>= 4.2, < 7.0)
+      activesupport (>= 4.2, < 7.0)
     addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
     ansi (1.5.0)
@@ -50,6 +58,7 @@ GEM
     ast (2.4.0)
     autotest-rails (4.2.1)
       ZenTest (~> 4.5)
+    awesome_print (1.8.0)
     backports (3.15.0)
     bcrypt (3.1.12)
     better_errors (2.5.1)
@@ -81,6 +90,8 @@ GEM
       regexp_parser (~> 1.2)
       uglifier
       xpath (~> 3.2)
+    case_transform (0.2)
+      activesupport
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     coderay (1.1.2)
@@ -166,6 +177,7 @@ GEM
     iniparse (1.4.4)
     jaro_winkler (1.5.2)
     json (2.2.0)
+    jsonapi-renderer (0.2.2)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -210,6 +222,9 @@ GEM
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
+    pry-byebug (3.8.0)
+      byebug (~> 11.0)
+      pry (~> 0.10)
     public_suffix (3.0.3)
     puma (3.12.1)
     rack (2.0.7)
@@ -328,7 +343,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  active_model_serializers (~> 0.10.0)
+  acts_as_paranoid
   autotest-rails
+  awesome_print
   bcrypt
   better_errors
   binding_of_caller
@@ -347,6 +365,8 @@ DEPENDENCIES
   newrelic_rpm
   ordinare
   overcommit
+  pry
+  pry-byebug
   puma (~> 3.11)
   rack-livereload (~> 0.3.17)
   rails (~> 5.2.3)
@@ -367,4 +387,4 @@ RUBY VERSION
    ruby 2.5.5p157
 
 BUNDLED WITH
-   2.0.1
+   2.1.4

@@ -19,13 +19,19 @@ gem 'fast_jsonapi'
 gem 'newrelic_rpm'
 gem 'sentry-raven'
 gem 'will_paginate', '~> 3.1.0'
-
+gem 'acts_as_paranoid'
+gem 'active_model_serializers', '~> 0.10.0'
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'rspec-rails', '~> 3.5'
   gem 'shoulda-matchers'
+  gem 'awesome_print'
+  gem 'factory_bot_rails'
+  gem 'pry'
+  gem 'pry-byebug'
+  gem 'rubocop', '~> 0.58.2', require: false
 end
 
 group :development do
