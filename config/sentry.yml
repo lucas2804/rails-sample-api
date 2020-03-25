@@ -1,0 +1,20 @@
+development:
+  url: <%= ENV["SENTRY_URL"] %>
+  public: <%= ENV["SENTRY_PUBLIC"] %>
+  secret: <%= ENV["SENTRY_SECRET"] %>
+  protocol: <%= ENV["SENTRY_PROTOCOL"] %>
+  project: <%= ENV["SENTRY_PROJECT"] %>
+
+test:
+  url: <%= ENV["SENTRY_URL"] %>
+  public: <%= ENV["SENTRY_PUBLIC"] %>
+  secret: <%= ENV["SENTRY_SECRET"] %>
+  protocol: <%= ENV["SENTRY_PROTOCOL"] %>
+  project: <%= ENV["SENTRY_PROJECT"] %>
+
+production:
+  url: <%= ENV["SENTRY_URL"] %>
+  public: <%= ENV["SENTRY_PUBLIC"] %>
+  secret: <%= ENV["SENTRY_SECRET"] %>
+  protocol: <%= ENV["SENTRY_PROTOCOL"] %>
+  project: <%= ENV["SENTRY_PROJECT"] %>

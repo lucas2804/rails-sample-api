@@ -1,0 +1,53 @@
+variables:
+  GIT_STRATEGY: fetch
+
+before_script:
+  - "export ENVIRONMENT=$CI_COMMIT_REF_NAME"
+  - "export STACK_NAME=rails-sample-api"
+
+stages:
+  - build_test
+  - test
+  - build_deploy
+
+Build docker image to test:
+  stage: build_test
+  tags:
+    - docker-build-integration
+  script:
+    - "docker build -t registry-aws.innogr.am/${STACK_NAME}:${ENVIRONMENT} -f Dockerfile ."
+  only:
+    - test
+    - merge_requests
+    - master
+
+Unit Test:
+  stage: test
+  tags:
+    - docker-build-integration
+  script:
+    - "docker run registry-aws.innogr.am/${STACK_NAME}:${ENVIRONMENT} /bin/bash -c 'RAILS_ENV=test bundle exec rails db:migrate'"
+    - "docker run registry-aws.innogr.am/${STACK_NAME}:${ENVIRONMENT} /bin/bash -c 'RAILS_ENV=test bundle exec rails db:seed'"
+    - "docker run registry-aws.innogr.am/${STACK_NAME}:${ENVIRONMENT} /bin/bash -c 'RAILS_ENV=test bundle exec rspec -f d'"
+    - "docker run registry-aws.innogr.am/${STACK_NAME}:${ENVIRONMENT} /bin/bash -c 'RAILS_ENV=test bundle exec brakeman -z -q'"
+    - "docker run registry-aws.innogr.am/${STACK_NAME}:${ENVIRONMENT} /bin/bash -c 'RAILS_ENV=test bundle exec rubocop'"
+  only:
+    - test
+    - merge_requests
+    - master
+
+Build docker image to deploy:
+  stage: build_deploy
+  tags:
+    - docker-build-integration
+  script:
+    - "docker login -u ${aws_registry_user} -p ${aws_registry_password} registry-aws.innogr.am"
+    - "docker build --build-arg ENVIRONMENT=${ENVIRONMENT} -t registry-aws.innogr.am/${STACK_NAME}:${ENVIRONMENT} -f Dockerfile ."
+    - "docker push registry-aws.innogr.am/${STACK_NAME}:${ENVIRONMENT}"
+  when: on_success
+  only:
+    - test
+    - merge_requests
+    - master
+  cache:
+    untracked: true
