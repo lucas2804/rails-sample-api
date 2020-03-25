@@ -3,7 +3,7 @@ class TweetsController < ApplicationController
 
   # GET /tweets
   def index
-    @tweets = Tweet.all
+    @tweets = Tweet.all.includes(:user)
 
     render json: @tweets
   end
@@ -39,13 +39,14 @@ class TweetsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_tweet
-      @tweet = Tweet.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def tweet_params
-      params.require(:tweet).permit(:content, :user_id, :status)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_tweet
+    @tweet = Tweet.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def tweet_params
+    params.require(:tweet).permit(:content, :user_id, :status)
+  end
 end
