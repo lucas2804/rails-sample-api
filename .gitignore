@@ -25,3 +25,4 @@ vendor/bundle
 coverage
 k8s
 .env.development
+secret
