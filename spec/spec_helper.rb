@@ -1,6 +1,7 @@
 require 'simplecov'
 require 'simplecov-console'
 require 'factory_bot_rails'
+
 SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(
   [
     SimpleCov::Formatter::HTMLFormatter,
