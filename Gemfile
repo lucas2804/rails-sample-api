@@ -1,13 +1,10 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
-
-ruby '2.5.5'
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
 gem 'rack-cors', require: 'rack/cors'
 # Use mysql as the database for Active Record
-gem 'mysql2', '>= 0.4.4', '< 0.6.0'
+gem 'mysql2'
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
 
@@ -22,9 +19,8 @@ gem 'fast_jsonapi'
 gem 'newrelic_rpm'
 gem 'sentry-raven'
 gem 'will_paginate', '~> 3.1.0'
-
+gem 'awesome_print'
 group :development, :test do
-  gem 'awesome_print'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'dotenv-rails'
   gem 'factory_bot_rails'

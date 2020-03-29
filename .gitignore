@@ -23,3 +23,5 @@
 /config/master.key
 vendor/bundle
 coverage
+k8s
+.env.development
