@@ -1,79 +1,49 @@
-# Rails Sample Restful
-[![pipeline status](https://gitlab.skylabteam.com/innogram.sg/rails-sample-api/badges/master/pipeline.svg)](https://gitlab.skylabteam.com/innogram.sg/rails-sample-api/commits/master)
-[![coverage report](https://gitlab.skylabteam.com/innogram.sg/rails-sample-api/badges/test/coverage.svg)](https://gitlab.skylabteam.com/innogram.sg/rails-sample-api/commits/master)
-
-### Fork to a new repo
-
-### Configuration
-
-### Install Overcommit
-
-> bundle install
-
-> overcommit --install
-
-### Running
-> rails s
-
-### Unit Test
-
-> RAILS_ENV=test bundle exec rspec
-
-### Clean
-> ./clean.sh
-
-### User APIs
-
-#### List
+## Rails Sample Restful
 
 ```
-curl -X GET \
-  http://localhost:3000/users \
-  -H 'cache-control: no-cache'
+- Deploy by docker images to Kubernetes
+- Deploy to Kubernetes with templates from **auto_deploy_kubernetes/api_ingress.json**
+- Use Next.js/React.js/Redux for front end
+- Use RoR for backend
+- Use Mysql as DB
 ```
 
-#### Get
 
-```
-curl -X GET \
-  http://localhost:3000/users/1 \
-  -H 'cache-control: no-cache'
-```
+### II - Architecture design for high traffic Twitter
 
-#### Create
+- Kubernetes combines over 15 years of Google’s experience running production workloads at scale with best-of-breed ideas and practices from the community. (https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
+ 
+- Next.js is statically generated and server-rendered React applications
 
-```
-curl -X POST \
-  http://localhost:3000/users \
-  -H 'Content-Type: application/json' \
-  -H 'cache-control: no-cache' \
-  -d '{
-    "user": {
-        "email": "admin@example.com",
-        "password": "abc!@#"
-    }
-}'
-```
+- React.js/Redux is the best way to maintain state of applications
 
-#### Update
+- Mysql with indexing in retweets and tweets table can solve api response time under 1s
 
-```
-curl -X PUT \
-  http://localhost:3000/users/1 \
-  -H 'Content-Type: application/json' \
-  -H 'cache-control: no-cache' \
-  -d '{
-    "user": {
-        "email": "admin@example.com",
-        "password": "abc!@#1"
-    }
-}'
+- If response time over 1s, consider to migrate separate table for separate retweets, or use other NoSQL
+
+#### 1 - Turn on API server
+- Environment variables are loaded from **.env.development**
+
+```bash
+git clone git@github.com:lucas2804/rails-sample-api.git
+cd rails-sample-api
+rake db:create
+rake db:migrate
+rake db:seed
+
+rails s -b 0.0.0.0 -p 3001 # expose on http://localhost:30001
 ```
 
-#### Delete
+#### 2 - Turn on Next.js server for React.js-Frontend
+- Environment variables are loaded from **.env.development**
+- API_URL in development is equal **http:://localhost:30001** , which the same with api server.
 
-```
-curl -X DELETE \
-  http://localhost:3000/users/1 \
-  -H 'cache-control: no-cache'
+```bash
+git clone git@github.com:lucas2804/nextjs-sample.git
+cd nextjs-sample
+
+yarn install
+yarn start
+
+curl http://localhost:3000
 ```
