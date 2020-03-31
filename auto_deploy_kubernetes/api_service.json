@@ -1,0 +1,25 @@
+{
+  "kind": "Service",
+  "spec": {
+    "type": "LoadBalancer",
+    "ports": [
+      {
+        "name": "http",
+        "port": 80,
+        "targetPort": 3000,
+        "protocol": "TCP"
+      }
+    ],
+    "selector": {
+      "app": "rails-sample-api"
+    }
+  },
+  "metadata": {
+    "name": "rails-sample-api",
+    "labels": {
+      "app": "rails-sample-api"
+    },
+    "namespace": "default"
+  },
+  "apiVersion": "v1"
+}

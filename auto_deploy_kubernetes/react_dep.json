@@ -1,0 +1,66 @@
+{
+  "kind": "Deployment",
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "matchLabels": {
+        "app": "nextjs-sample"
+      }
+    },
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "args": null,
+            "name": "nextjs-sample",
+            "image": "lucdang/nextjs-sample",
+            "ports": [
+              {
+                "containerPort": 3000
+              }
+            ],
+            "envFrom": [
+              {
+                "configMapRef": {
+                  "name": "rails-config-map"
+                }
+              }
+            ],
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "256Mi"
+              },
+              "requests": {
+                "cpu": "10m",
+                "memory": "10Mi"
+              }
+            },
+            "imagePullPolicy": "Always"
+          }
+        ],
+        "restartPolicy": "Always",
+        "imagePullSecrets": [
+          {
+            "name": "lucdang-regcred"
+          }
+        ]
+      },
+      "metadata": {
+        "name": "nextjs-sample",
+        "labels": {
+          "app": "nextjs-sample"
+        },
+        "namespace": "default"
+      }
+    }
+  },
+  "metadata": {
+    "name": "nextjs-sample",
+    "labels": {
+      "app": "nextjs-sample"
+    },
+    "namespace": "default"
+  },
+  "apiVersion": "apps/v1"
+}

@@ -15,12 +15,20 @@ class RetweetsController < ApplicationController
 
   # POST /retweets
   def create
-    @retweet = Retweet.new(retweet_params)
+    @retweet = Retweet.find_by(user_id: retweet_params[:user_id], tweet_id: retweet_params[:tweet_id])
 
-    if @retweet.save
-      render json: @retweet, status: :created, location: @retweet
+    if @retweet
+      @retweet.delete
+      render json: { retweet: { tweet_id: retweet_params[:tweet_id], retweeted: false } },
+             status: :created, location: @retweet
     else
-      render json: @retweet.errors, status: :unprocessable_entity
+      @retweet = Retweet.new(retweet_params)
+      if @retweet.save
+        render json: { retweet: { tweet_id: retweet_params[:tweet_id], retweeted: true } },
+             status: :created, location: @retweet
+      else
+        render json: @retweet.errors, status: :unprocessable_entity
+      end
     end
   end
 
@@ -39,13 +47,14 @@ class RetweetsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_retweet
-      @retweet = Retweet.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def retweet_params
-      params.require(:retweet).permit(:user_id, :tweet_id, :status)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_retweet
+    @retweet = Retweet.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def retweet_params
+    params.require(:retweet).permit(:user_id, :tweet_id, :status)
+  end
 end

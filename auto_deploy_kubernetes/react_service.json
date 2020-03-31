@@ -1,0 +1,27 @@
+{
+  "kind": "Service",
+  "spec": {
+    "type": "LoadBalancer",
+    "ports": [
+      {
+        "name": "http",
+        "port": 80,
+        "targetPort": 3000
+      }
+    ],
+    "selector": {
+      "app": "nextjs-sample"
+    }
+  },
+  "status": {
+    "loadBalancer": {}
+  },
+  "metadata": {
+    "name": "nextjs-sample",
+    "labels": {
+      "app": "nextjs-sample"
+    },
+    "namespace": "default"
+  },
+  "apiVersion": "v1"
+}

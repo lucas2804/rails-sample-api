@@ -1,0 +1,39 @@
+{
+  "kind": "Ingress",
+  "spec": {
+    "rules": [
+      {
+        "http": {
+          "paths": [
+            {
+              "path": "/_next/",
+              "backend": {
+                "serviceName": "nextjs-sample",
+                "servicePort": "http"
+              }
+            },
+            {
+              "path": "/home",
+              "backend": {
+                "serviceName": "nextjs-sample",
+                "servicePort": "http"
+              }
+            },
+            {
+              "path": "/",
+              "backend": {
+                "serviceName": "rails-sample-api",
+                "servicePort": "http"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "name": "service-dlc-ingress",
+    "namespace": "default"
+  },
+  "apiVersion": "extensions/v1beta1"
+}

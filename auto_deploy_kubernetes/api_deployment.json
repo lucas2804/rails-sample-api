@@ -1,0 +1,64 @@
+{
+  "kind": "Deployment",
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "matchLabels": {
+        "app": "rails-sample-api"
+      }
+    },
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "args": [
+              "bundle",
+              "exec",
+              "rails",
+              "s",
+              "-b",
+              "0.0.0.0",
+              "puma"
+            ],
+            "name": "sptel-api",
+            "image": "lucdang/rails-sample-api",
+            "ports": [
+              {
+                "containerPort": 3000
+              }
+            ],
+            "envFrom": [
+              {
+                "configMapRef": {
+                  "name": "rails-config-map"
+                }
+              }
+            ],
+            "imagePullPolicy": "Always"
+          }
+        ],
+        "restartPolicy": "Always",
+        "imagePullSecrets": [
+          {
+            "name": "lucdang-regcred"
+          }
+        ]
+      },
+      "metadata": {
+        "name": "service-sptel-api",
+        "labels": {
+          "app": "rails-sample-api"
+        },
+        "namespace": "default"
+      }
+    }
+  },
+  "metadata": {
+    "name": "rails-sample-api",
+    "labels": {
+      "app": "rails-sample-api"
+    },
+    "namespace": "default"
+  },
+  "apiVersion": "apps/v1"
+}
