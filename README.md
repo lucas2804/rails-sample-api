@@ -31,4 +31,17 @@
     + maxUnavailable=50%: specifies the maximum number of Pods that can be unavailable during the update process. 
     + maxSurge=50%: specifies the maximum number of Pods that can be created 
     + RollingUpdate: The deployment update pod by pod depends on maxUnavailable, maxSurge instead of kill all which lead to downtime
-    
+    + readinessProbe: to make sure the server is actually ready to receive requests (fill in spec.containers)
+    + preStop-sleep 15s: waiting for a while before send shutdown signal to make sure load balancer stop send request.
+
+### III - Simple Ruby Server
+
+- I've implemented by Ruby because I'm not familiar with Python or Go, I can learn them fast but cant learn in 1 day.
+- In the content_html response, I've redact author names to `***` then response data.
+
+![gcloud-cmd.png](./images/gcloud-cmd.png)
+![travis-ci.png](./images/travis-ci.png)
+![travis-ci.png](./images/travis-ci-01.png)
+![travis-ci.png](./images/travis-ci-02.png)
+
+![json_response.png](./images/json_response.png)
