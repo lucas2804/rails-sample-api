@@ -11,6 +11,10 @@ class UsersController < ApplicationController
 
   end
 
+  def healthz
+    render json: { message: "System is Healthy"}, status: :ok
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

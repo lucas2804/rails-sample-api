@@ -1,11 +1,18 @@
 {
   "kind": "Deployment",
   "spec": {
-    "replicas": 1,
+    "replicas": 2,
     "selector": {
       "matchLabels": {
         "app": "rails-sample-api"
       }
+    },
+    "strategy": {
+      "rollingUpdate": {
+        "maxSurge": "50%",
+        "maxUnavailable": "50%"
+      },
+      "type": "RollingUpdate"
     },
     "template": {
       "spec": {
@@ -22,6 +29,26 @@
             ],
             "name": "rails-sample-api",
             "image": "lucdang/rails-sample-api",
+            "readinessProbe": {
+              "httpGet": {
+                "path": "/healthz",
+                "port": 3000
+              },
+              "initialDelaySeconds": 5,
+              "periodSeconds": 5,
+              "successThreshold": 1
+            },
+            "lifecycle": {
+              "preStop": {
+                "exec": {
+                  "command": [
+                    "/bin/bash",
+                    "-c",
+                    "sleep 15"
+                  ]
+                }
+              }
+            },
             "ports": [
               {
                 "containerPort": 3000

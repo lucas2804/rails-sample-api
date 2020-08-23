@@ -13,7 +13,6 @@ cache:
   - directories:
     - "$HOME/google-cloud-sdk/"
     - docker_images
-    - docker
     - /home/travis/.rvm/
 before_cache:
   - docker save -o docker_images/images.tar $(docker images -a -q)
