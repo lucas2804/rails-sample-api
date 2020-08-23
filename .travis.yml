@@ -1,19 +1,11 @@
 language: ruby
-rvm:
-  - 2.6.3
-bundler_args: --jobs=2
-sudo: required
+services:
+  - mysql
+  - docker
 env:
   global:
     - SHA=$(git rev-parse HEAD)
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1
-    - PATH=$PATH:$HOME/google-cloud-sdk/bin
-    - PROJECT_ID="skylab-250209-287305"
-    - ZONE="asia-east2-a"
-    - IMAGE_NAME=demo:latest
-    - FULL_IMAGE_NAME=gcr.io/$PROJECT_ID/$IMAGE_NAME
-    - GOOGLE_APPLICATION_CREDENTIALS="${PWD}/client-secret.json"
-    - CLUSTER_NAME=axon
 before_install:
   - openssl aes-256-cbc -K $encrypted_2fd045226a67_key -iv $encrypted_2fd045226a67_iv -in client-secret.json.enc -out client-secret.json -d
   - curl https://sdk.cloud.google.com | bash > /dev/null;
@@ -27,9 +19,6 @@ before_install:
 script:
   - bundle exec rake db:setup
 cache: bundler
-services:
-  - mysql
-  - docker
 jobs:
   include:
     - stage: unit tests
