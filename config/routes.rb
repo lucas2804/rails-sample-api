@@ -9,5 +9,9 @@ Rails.application.routes.draw do
   resources :retweets
   root :to => "users#index"
   resources :tweets
-  resources :users
+  resources :users do
+    collection do
+      get :collect_name
+    end
+  end
 end

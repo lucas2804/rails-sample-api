@@ -1,6 +1,16 @@
 class UsersController < ApplicationController
   before_action :set_user, only: %i[show update destroy]
 
+  def collect_name
+    response = ::Users::CollectNameService.new.execute
+    if response.error
+      render json: { message: response.error }, status: :unprocessable_entity
+    else
+      render json: { names: response.result }
+    end
+
+  end
+
   # GET /users
   def index
     page = params[:page].to_i.positive? ? params[:page].to_i : 1
