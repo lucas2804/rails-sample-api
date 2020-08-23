@@ -5,11 +5,6 @@ env:
   global:
     - SHA=$(git rev-parse HEAD)
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1
-cache:
-  - directories:
-      - "$HOME/google-cloud-sdk/"
-      - /home/travis/.rvm/
-  bundler
 
 before_install:
   - openssl aes-256-cbc -K $encrypted_2fd045226a67_key -iv $encrypted_2fd045226a67_iv -in client-secret.json.enc -out client-secret.json -d
@@ -31,15 +26,6 @@ jobs:
     - stage: unit tests
       before_script: "bundle exec rake db:setup"
       script: "bundle exec rake spec"
-#    - stage: deploy to production
-#      script: skip
-#      deploy:
-#        provider: heroku
-#        app: ascenda
-#        api_key: c462081e-db1a-4598-a9d4-e5a9731371b6
-#    - stage: test production
-#      script: 'curl https://ascenda.herokuapp.com'
-
 
 deploy:
   provider: script
