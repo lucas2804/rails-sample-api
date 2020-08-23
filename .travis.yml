@@ -36,6 +36,6 @@ jobs:
 
 deploy:
   provider: script
-  script: bash ./deploy.sh
+  script: bash ./deplfaoy.sh
   on:
     branch: master
