@@ -25,14 +25,114 @@
 
 ### II - BONUS: how you would handle zero-downtime upgrades of the service
 
+- **`I've already implemented zero downtime`** on deployment `rails-sample-api`
 - Use terms: strategy, maxSurge, maxUnavailable, RollingUpdate, readinessProbe, preStop
-- I've already implemented zero downtime on deployment `rails-sample-api`
+
 - Explain how it work:
     + maxUnavailable=50%: specifies the maximum number of Pods that can be unavailable during the update process. 
     + maxSurge=50%: specifies the maximum number of Pods that can be created 
     + RollingUpdate: The deployment update pod by pod depends on maxUnavailable, maxSurge instead of kill all which lead to downtime
     + readinessProbe: to make sure the server is actually ready to receive requests (fill in spec.containers)
     + preStop-sleep 15s: waiting for a while before send shutdown signal to make sure load balancer stop send request.
+
+```json
+{
+  "kind": "Deployment",
+  "spec": {
+    "replicas": 2,
+    "selector": {
+      "matchLabels": {
+        "app": "rails-sample-api"
+      }
+    },
+    "strategy": {
+      "rollingUpdate": {
+        "maxSurge": "50%",
+        "maxUnavailable": "50%"
+      },
+      "type": "RollingUpdate"
+    },
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "args": [
+              "bundle",
+              "exec",
+              "rails",
+              "s",
+              "-b",
+              "0.0.0.0",
+              "puma"
+            ],
+            "name": "rails-sample-api",
+            "image": "lucdang/rails-sample-api",
+            "readinessProbe": {
+              "httpGet": {
+                "path": "/healthz",
+                "port": 3000
+              },
+              "initialDelaySeconds": 5,
+              "periodSeconds": 5,
+              "successThreshold": 1
+            },
+            "lifecycle": {
+              "preStop": {
+                "exec": {
+                  "command": [
+                    "/bin/bash",
+                    "-c",
+                    "sleep 15"
+                  ]
+                }
+              }
+            },
+            "ports": [
+              {
+                "containerPort": 3000
+              }
+            ],
+            "envFrom": [
+              {
+                "configMapRef": {
+                  "name": "rails-config-map"
+                }
+              },
+              {
+                "secretRef": {
+                  "name": "rails-secret"
+                }
+              }
+            ],
+            "imagePullPolicy": "Always"
+          }
+        ],
+        "restartPolicy": "Always",
+        "imagePullSecrets": [
+          {
+            "name": "lucdang-regcred"
+          }
+        ]
+      },
+      "metadata": {
+        "name": "service-sptel-api",
+        "labels": {
+          "app": "rails-sample-api"
+        },
+        "namespace": "default"
+      }
+    }
+  },
+  "metadata": {
+    "name": "rails-sample-api",
+    "labels": {
+      "app": "rails-sample-api"
+    },
+    "namespace": "default"
+  },
+  "apiVersion": "apps/v1"
+}
+```
 
 ### III - Simple Ruby Server
 
