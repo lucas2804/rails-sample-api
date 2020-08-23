@@ -31,6 +31,9 @@
               {
                 "configMapRef": {
                   "name": "rails-config-map"
+                },
+                "secretRef": {
+                  "name": "rails-secret"
                 }
               }
             ],
