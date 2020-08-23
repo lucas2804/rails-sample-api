@@ -1,0 +1,27 @@
+<script>
+  var swap = (arr, i, j) => {
+    let temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp
+  };
+  
+  selectionSort = (arr) => {
+		let max = arr.length;
+  
+    for (let i = 0; i < max; i++) {
+      let min_pos = i;
+      for (let j = i; j < max; j++) {
+	      if (arr[min_pos] > arr[j]) {
+	        min_pos = j
+	      }
+      }
+      
+      swap(arr, min_pos, i)
+    }
+    
+    console.log(arr)
+    return arr
+  };
+
+  selectionSort([3, 8, 2, 9, 1])
+</script>
