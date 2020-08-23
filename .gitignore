@@ -26,3 +26,4 @@ coverage
 k8s
 .env.development
 secret
+client-secret.json

@@ -7,6 +7,23 @@ env:
   global:
     - SHA=$(git rev-parse HEAD)
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+    - PATH=$PATH:$HOME/google-cloud-sdk/bin
+    - PROJECT_ID="skylab-250209-287305"
+    - ZONE="asia-east2-a"
+    - IMAGE_NAME=demo:latest
+    - FULL_IMAGE_NAME=gcr.io/$PROJECT_ID/$IMAGE_NAME
+    - GOOGLE_APPLICATION_CREDENTIALS="${PWD}/client-secret.json"
+    - CLUSTER_NAME=axon
+before_install:
+  - openssl aes-256-cbc -K $encrypted_2fd045226a67_key -iv $encrypted_2fd045226a67_iv -in client-secret.json.enc -out client-secret.json -d
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file service-account.json
+  - gcloud config set project skylab-250209-287305
+  - gcloud config set compute/zone asia-east2-a
+  - gcloud container clusters get-credentials axon
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 script:
   - bundle exec rake db:setup
 cache: bundler
@@ -27,17 +44,6 @@ jobs:
 #    - stage: test production
 #      script: 'curl https://ascenda.herokuapp.com'
 
-before_install:
-  - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in service-account.json.enc -out service-account.json -d
-  - curl https://sdk.cloud.google.com | bash > /dev/null;
-  - source $HOME/google-cloud-sdk/path.bash.inc
-  - gcloud components update kubectl
-  - gcloud auth activate-service-account --key-file service-account.json
-  - gcloud config set project skilful-berm-214822
-  - gcloud config set compute/zone us-central1-a
-  - gcloud container clusters get-credentials multi-cluster
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker build -t stephengrider/react-test -f ./client/Dockerfile.dev ./client
 
 deploy:
   provider: script
