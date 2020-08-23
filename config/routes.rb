@@ -5,4 +5,5 @@ Rails.application.routes.draw do
       get :collect_name
     end
   end
+
 end
