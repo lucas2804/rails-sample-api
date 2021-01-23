@@ -1,0 +1,2 @@
+class SleepCycle < ApplicationRecord
+end
