@@ -46,6 +46,6 @@ class SleepCyclesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def sleep_cycle_params
-      params.require(:sleep_cycle).permit(:session_uuid, :user_id, :start_sleep_time, :end_sleep_time, :total_sleep_time)
+      params.require(:sleep_cycle).permit(:user_id, :start_sleep_time, :end_sleep_time, :total_sleep_time)
     end
 end
