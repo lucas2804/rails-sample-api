@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :follows
   root :to => "users#collect_name"
   get '/healthz' => "users#healthz"
   resources :users do
