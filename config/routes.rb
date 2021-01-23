@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :sleep_cycles
+  resources :sleep_cycles do
+    member do
+      put :end_sleep_cycle
+    end
+  end
   resources :follows
   root :to => "users#collect_name"
   get '/healthz' => "users#healthz"

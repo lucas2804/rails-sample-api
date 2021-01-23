@@ -1,5 +1,5 @@
 class SleepCyclesController < ApplicationController
-  before_action :set_sleep_cycle, only: [:show, :update, :destroy]
+  before_action :set_sleep_cycle, only: [:show, :update, :destroy, :end_sleep_cycle]
 
   # GET /sleep_cycles
   def index
@@ -16,9 +16,19 @@ class SleepCyclesController < ApplicationController
   # POST /sleep_cycles
   def create
     @sleep_cycle = SleepCycle.new(sleep_cycle_params)
+    @sleep_cycle.update(start_sleep_time: Time.now)
 
     if @sleep_cycle.save
       render json: @sleep_cycle, status: :created, location: @sleep_cycle
+    else
+      render json: @sleep_cycle.errors, status: :unprocessable_entity
+    end
+  end
+
+  def end_sleep_cycle
+    @sleep_cycle.update_total_time
+    if @sleep_cycle.save
+      render json: @sleep_cycle, status: :ok, location: @sleep_cycle
     else
       render json: @sleep_cycle.errors, status: :unprocessable_entity
     end
@@ -33,19 +43,19 @@ class SleepCyclesController < ApplicationController
     end
   end
 
-  # DELETE /sleep_cycles/1
-  def destroy
-    @sleep_cycle.destroy
+  private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_sleep_cycle
+    @sleep_cycle = SleepCycle.find(params[:id])
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_sleep_cycle
-      @sleep_cycle = SleepCycle.find(params[:id])
-    end
+  # Only allow a trusted parameter "white list" through.
+  def sleep_cycle_params
+    params.permit(:user_id)
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def sleep_cycle_params
-      params.require(:sleep_cycle).permit(:user_id, :start_sleep_time, :end_sleep_time, :total_sleep_time)
-    end
+  def end_sleep_cycle_params
+    params.permit(:user_id)
+  end
 end

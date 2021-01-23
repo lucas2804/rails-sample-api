@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_23_015117) do
+ActiveRecord::Schema.define(version: 2021_01_23_044646) do
 
   create_table "follows", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "user_id"
@@ -32,6 +32,15 @@ ActiveRecord::Schema.define(version: 2021_01_23_015117) do
     t.index ["status"], name: "index_retweets_on_status"
     t.index ["tweet_id"], name: "index_retweets_on_tweet_id"
     t.index ["user_id"], name: "index_retweets_on_user_id"
+  end
+
+  create_table "sleep_cycles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "user_id"
+    t.datetime "start_sleep_time"
+    t.datetime "end_sleep_time"
+    t.float "total_sleep_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "tweets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
