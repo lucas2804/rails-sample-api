@@ -2,6 +2,7 @@ class User < ApplicationRecord
   validates_uniqueness_of :email
 
   has_many :tweets
+  has_many :sleep_cycles
 
   has_many :follows
 
