@@ -22,11 +22,20 @@ class User < ApplicationRecord
     follow.delete! if follow
   end
 
-  def total_sleep_past_week
+  def sleep_cycles_past_week
     if sleep_cycles.past_week.present?
       (sleep_cycles.past_week.sum(&:total_sleep_time).to_f / 3600.to_f).round(2)
     else
       0
     end
+  end
+
+  def total_friend_sleeps_past_week
+    User.joins(:sleep_cycles)
+        .where('users.id': friends.pluck(:id))
+        .group('users.id')
+        .merge(SleepCycle.past_week)
+        .order('sum_sleep_cycles_total_sleep_time DESC')
+        .sum('sleep_cycles.total_sleep_time')
   end
 end
