@@ -11,5 +11,9 @@ Rails.application.routes.draw do
     collection do
       get :collect_name
     end
+
+    member do
+      get :friend_sleeps
+    end
   end
 end

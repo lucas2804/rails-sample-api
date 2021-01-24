@@ -11,4 +11,22 @@ class User < ApplicationRecord
 
   has_many :following_relationships, foreign_key: :user_id, class_name: 'Follow'
   has_many :following, through: :following_relationships, source: :following
+  alias :friends :following
+
+  def follow!(following_id)
+    Follow.find_or_create_by!(following_id: following_id, user_id: id)
+  end
+
+  def un_follow!(following_id)
+    follow = Follow.find_by(following_id: following_id, user_id: id)
+    follow.delete! if follow
+  end
+
+  def total_sleep_past_week
+    if sleep_cycles.past_week.present?
+      (sleep_cycles.past_week.sum(&:total_sleep_time).to_f / 3600.to_f).round(2)
+    else
+      0
+    end
+  end
 end

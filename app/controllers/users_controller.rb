@@ -1,5 +1,9 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[show update destroy]
+  before_action :set_user, only: %i[show update destroy friend_sleeps]
+
+  def friend_sleeps
+    render json: @user.friends, each_serializer: FriendSleepsSerializer
+  end
 
   def collect_name
     response = ::Users::CollectNameService.new.execute

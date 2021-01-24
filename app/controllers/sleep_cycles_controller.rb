@@ -3,7 +3,7 @@ class SleepCyclesController < ApplicationController
 
   # GET /sleep_cycles
   def index
-    @sleep_cycles = SleepCycle.all
+    @sleep_cycles = SleepCycle.all.order_by_start_time
 
     render json: @sleep_cycles
   end
@@ -15,6 +15,17 @@ class SleepCyclesController < ApplicationController
 
   # POST /sleep_cycles
   def create
+    @sleep_cycle = SleepCycle.new(sleep_cycle_params)
+    @sleep_cycle.update(start_sleep_time: Time.now)
+
+    if @sleep_cycle.save
+      render json: @sleep_cycle, status: :created, location: @sleep_cycle
+    else
+      render json: @sleep_cycle.errors, status: :unprocessable_entity
+    end
+  end
+
+  def start_sleep_cycle
     @sleep_cycle = SleepCycle.new(sleep_cycle_params)
     @sleep_cycle.update(start_sleep_time: Time.now)
 
@@ -52,10 +63,6 @@ class SleepCyclesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def sleep_cycle_params
-    params.permit(:user_id)
-  end
-
-  def end_sleep_cycle_params
     params.permit(:user_id)
   end
 end
