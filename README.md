@@ -1,5 +1,15 @@
 ## Tripla README
 
+1. Clock In operation, and return all clocked-in times, ordered by created time.
+    + **track start sleep time**
+    + **track end sleep time**
+    + **ordered by created time**
+2. Users can follow and unfollow other users.
+    + **User_id_4 follow user_id_1**
+    + **User_id_4 unfollow user_id_1**
+3. See the sleep records over the past week for their friends, ordered by the length of their sleep.
+    + **See the sleep records**
+
 ## I - Set up
 
 ```bash
@@ -53,7 +63,7 @@ curl --location --request PUT 'http://localhost:3000/sleep_cycles/124/end_sleep_
 }
 ```
 
-- ** ordered by created time **
+- **ordered by created time**
 
 ```json
 
