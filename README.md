@@ -1,252 +1,276 @@
-# II - Rails Sample Restful
+## Tripla README
 
-- Current production url: **http://34.96.252.51**
+## I - Set up
 
-### I - Tech stack
+```bash
+bundle exec rake db:migrate
+bundle exec rake db:seed
 
-- CI-CD by Travis which includes (.travis.yml): 
-    + run automation tests of rails-sample-api
-    + run rake db:setup; rake db:migrate; rspec
-    + cache rvm, cache docker images, cache google cloud
-    + build, tag, push docker image by $SHA to make sure k8s can always update new image and RollingUpdate with zero downtime
-        + docker build -t lucdang/rails-sample-api:$SHA -f ./Dockerfile ./
-        + kubectl set image deployments/rails-sample-api rails-sample-api=lucdang/rails-sample-api:$SHA
-    + Grant access permission from Travis-CI to cluster by service-account-IAM
-    + Deploy to Google Cloud K8s cluster
-    + `kubectl set image` to make sure update new image instead of use `latest` tag
-
-- `kubectl apply -f secret` in `deploy.sh` to create configmap and secret 
-- `kubectl -f auto_deploy_kubernetes` in `deploy.sh` to create ingresses, services, deployments...
-- All secrets are created under base64 encode files BUT:
-    + create secret manually is better solution for security purpose
-    + User vault service is a good approach to store sensitive data
-- Use RoR for api server
-- Use Mysql as DB
-
-```yaml
-services:
-  - mysql
-  - docker
-env:
-  global:
-    - SHA=$(git rev-parse HEAD)
-    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
-language: ruby
-rvm:
-  - 2.6.3
-cache:
-  - bundler: true
-  - directories:
-    - "$HOME/google-cloud-sdk/"
-    - docker_images
-    - /home/travis/.rvm/
-before_cache:
-  - docker save -o docker_images/images.tar $(docker images -a -q)
-before_install:
-  - docker load -i docker_images/images.tar || true
-  - openssl aes-256-cbc -K $encrypted_2fd045226a67_key -iv $encrypted_2fd045226a67_iv -in client-secret.json.enc -out client-secret.json -d
-  - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash; fi
-  - source $HOME/google-cloud-sdk/path.bash.inc
-  - gcloud auth activate-service-account --key-file client-secret.json
-  - gcloud components install kubectl
-  - gcloud config set project skylab-250209-287305
-  - gcloud config set compute/zone asia-east2-a
-  - gcloud container clusters get-credentials axon
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-bundler_args: --jobs=2
-jobs:
-  include:
-    - stage: unit tests
-      before_script: "bundle exec rake db:setup"
-      script: "bundle exec rake spec"
-
-deploy:
-  provider: script
-  script: bash ./deploy.sh
-  on:
-    branch: master
+bundle exec rails s
 ```
 
+### 1. Clock In operation, and return all clocked-in times, ordered by created time.
 
-### II - BONUS: how you would handle zero-downtime upgrades of the service
-
-- **`I've already implemented zero downtime`** on deployment `rails-sample-api`
-- Use terms: strategy, maxSurge, maxUnavailable, RollingUpdate, readinessProbe, preStop
-
-- Explain how it work:
-    + maxUnavailable=50%: specifies the maximum number of Pods that can be unavailable during the update process. 
-    + maxSurge=50%: specifies the maximum number of Pods that can be created 
-    + RollingUpdate: The deployment update pod by pod depends on maxUnavailable, maxSurge instead of kill all which lead to downtime
-    + readinessProbe: to make sure the server is actually ready to receive requests (fill in spec.containers)
-    + preStop-sleep 15s: waiting for a while before send shutdown signal to make sure load balancer stop send request.
+- **track start sleep time**
 
 ```json
+curl --location --request POST 'http://localhost:3000/sleep_cycles' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjNTkzNmVjNyJ9.QA3Gcvy27GAum1y2L_f_YbYJsuDmuYTzKf7i_qtaNW0' \
+--header 'Cookie: next-i18next=en' \
+--data-raw '{
+    "user_id": 1
+}'
+
 {
-  "kind": "Deployment",
-  "spec": {
-    "replicas": 2,
-    "selector": {
-      "matchLabels": {
-        "app": "rails-sample-api"
-      }
-    },
-    "strategy": {
-      "rollingUpdate": {
-        "maxSurge": "50%",
-        "maxUnavailable": "50%"
-      },
-      "type": "RollingUpdate"
-    },
-    "template": {
-      "spec": {
-        "containers": [
-          {
-            "args": [
-              "bundle",
-              "exec",
-              "rails",
-              "s",
-              "-b",
-              "0.0.0.0",
-              "puma"
-            ],
-            "name": "rails-sample-api",
-            "image": "lucdang/rails-sample-api",
-            "readinessProbe": {
-              "httpGet": {
-                "path": "/healthz",
-                "port": 3000
-              },
-              "initialDelaySeconds": 5,
-              "periodSeconds": 5,
-              "successThreshold": 1
-            },
-            "lifecycle": {
-              "preStop": {
-                "exec": {
-                  "command": [
-                    "/bin/bash",
-                    "-c",
-                    "sleep 15"
-                  ]
-                }
-              }
-            },
-            "ports": [
-              {
-                "containerPort": 3000
-              }
-            ],
-            "envFrom": [
-              {
-                "configMapRef": {
-                  "name": "rails-config-map"
-                }
-              },
-              {
-                "secretRef": {
-                  "name": "rails-secret"
-                }
-              }
-            ],
-            "imagePullPolicy": "Always"
-          }
-        ],
-        "restartPolicy": "Always",
-        "imagePullSecrets": [
-          {
-            "name": "lucdang-regcred"
-          }
-        ]
-      },
-      "metadata": {
-        "name": "service-sptel-api",
-        "labels": {
-          "app": "rails-sample-api"
-        },
-        "namespace": "default"
-      }
+    "data": {
+        "id": 125,
+        "user_id": 1,
+        "start_sleep_time": "2021-01-25T01:03:45.000Z",
+        "end_sleep_time": null,
+        "length_of_sleep": "0 hours"
     }
-  },
-  "metadata": {
-    "name": "rails-sample-api",
-    "labels": {
-      "app": "rails-sample-api"
-    },
-    "namespace": "default"
-  },
-  "apiVersion": "apps/v1"
 }
 ```
 
-### III - Simple Ruby Server
+- **track end sleep time**
 
-- I've implemented by Ruby because I'm not familiar with Python or Go, I can learn them fast but cant learn in 1 day.
-- In the content_html response, I've redact author names to `***` then response data.
+```json
+curl --location --request PUT 'http://localhost:3000/sleep_cycles/124/end_sleep_cycle' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjNTkzNmVjNyJ9.QA3Gcvy27GAum1y2L_f_YbYJsuDmuYTzKf7i_qtaNW0' \
+--header 'Cookie: next-i18next=en' \
+--data-raw ''
 
-![gcloud-cmd.png](./images/gcloud-cmd.png)
-![travis-ci.png](./images/travis-ci.png)
-![travis-ci.png](./images/travis-ci-01.png)
-![travis-ci.png](./images/travis-ci-02.png)
+{
+    "data": {
+        "id": 124,
+        "user_id": 1,
+        "start_sleep_time": "2021-01-25T01:02:57.000Z",
+        "end_sleep_time": null,
+        "length_of_sleep": "0.03 hours"
+    }
+}
+```
 
-![json_response.png](./images/json_response.png)
+- ** ordered by created time **
 
+```json
 
-```ruby
-module Users
-  class CollectNameService
-    def execute
-      rest_params = rest_params(:get, url, {})
-      ap rest_params
-      begin
-        response = ::RestClient::Request.execute(rest_params)
-        body = JSON.parse(response.body)
+curl --location --request GET 'http://localhost:3000/sleep_cycles' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjNTkzNmVjNyJ9.QA3Gcvy27GAum1y2L_f_YbYJsuDmuYTzKf7i_qtaNW0' \
+--header 'Cookie: next-i18next=en' \
+--data-raw ''
 
-        sensitive_name_str = sensitive_names(body)
-        result = transform_content_html(sensitive_name_str, body)
-
-        ::OpenStruct.new(result: result, error: nil)
-      rescue ::RestClient::ExceptionWithResponse, ::RestClient::NotFound, ::StandardError => error
-        ap error
-        ap error.backtrace
-        ::OpenStruct.new(result: nil, error: error)
-      end
-    end
-
-    private
-
-    def transform_content_html(sensitive_name_str, body)
-      regex = Regexp.new(sensitive_name_str, true)
-      body['items'].each_with_index do |item, index|
-        body['items'][index]['content_html'].gsub!(regex, '***')
-      end
-      body
-    end
-
-    def sensitive_names(body)
-      names = []
-      body['items'].each do |item|
-        names << item['url']&.split('/')&.last.titleize.split(' ')
-      end
-      names.flatten.join('|')
-    end
-
-    def rest_params(method, url, payload)
-      {
-        method: method,
-        url: url,
-        headers: {
-          content_type: 'application/json;charset=UTF-8',
-          accept: 'application/json'
+{
+    "data": [
+        {
+            "id": 125,
+            "user_id": 1,
+            "start_sleep_time": "2021-01-25T01:03:45.000Z",
+            "end_sleep_time": null,
+            "length_of_sleep": "0 hours"
         },
-        payload: payload.to_json,
-        verify_ssl: false
-      }
-    end
+        {
+            "id": 124,
+            "user_id": 1,
+            "start_sleep_time": "2021-01-25T01:02:57.000Z",
+            "end_sleep_time": null,
+            "length_of_sleep": "0.03 hours"
+        },
+        {
+            "id": 123,
+            "user_id": 1,
+            "start_sleep_time": "2021-01-25T01:02:00.000Z",
+            "end_sleep_time": null,
+            "length_of_sleep": "0 hours"
+        },
+        {
+            "id": 122,
+            "user_id": 1,
+            "start_sleep_time": "2021-01-25T01:01:47.000Z",
+            "end_sleep_time": null,
+            "length_of_sleep": "0 hours"
+        },
+        {
+            "id": 121,
+            "user_id": 1,
+            "start_sleep_time": "2021-01-25T01:01:41.000Z",
+            "end_sleep_time": null,
+            "length_of_sleep": "0 hours"
+        },
+        {
+            "id": 1,
+            "user_id": 4,
+            "start_sleep_time": "2021-01-24T04:08:58.000Z",
+            "end_sleep_time": "2021-01-24T13:44:58.000Z",
+            "length_of_sleep": "9.6 hours"
+        },
+        {
+            "id": 2,
+            "user_id": 1,
+            "start_sleep_time": "2021-01-24T04:08:58.000Z",
+            "end_sleep_time": "2021-01-24T11:20:58.000Z",
+            "length_of_sleep": "7.2 hours"
+        },
+        {
+            "id": 3,
+            "user_id": 3,
+            "start_sleep_time": "2021-01-24T04:08:58.000Z",
+            "end_sleep_time": "2021-01-24T09:54:34.000Z",
+            "length_of_sleep": "5.76 hours"
+        },
+        {
+            "id": 4,
+            "user_id": 2,
+            "start_sleep_time": "2021-01-24T04:08:58.000Z",
+            "end_sleep_time": "2021-01-24T09:25:46.000Z",
+            "length_of_sleep": "5.28 hours"
+        },
+        {
+            "id": 5,
+            "user_id": 4,
+            "start_sleep_time": "2021-01-23T04:08:58.000Z",
+            "end_sleep_time": "2021-01-23T13:44:58.000Z",
+            "length_of_sleep": "9.6 hours"
+        },
+        {
+            "id": 6,
+            "user_id": 1,
+            "start_sleep_time": "2021-01-23T04:08:58.000Z",
+            "end_sleep_time": "2021-01-23T11:20:58.000Z",
+            "length_of_sleep": "7.2 hours"
+        },
+        {
+            "id": 7,
+            "user_id": 3,
+            "start_sleep_time": "2021-01-23T04:08:58.000Z",
+            "end_sleep_time": "2021-01-23T09:54:34.000Z",
+            "length_of_sleep": "5.76 hours"
+        },
+        {
+            "id": 8,
+            "user_id": 2,
+            "start_sleep_time": "2021-01-23T04:08:58.000Z",
+            "end_sleep_time": "2021-01-23T09:25:46.000Z",
+            "length_of_sleep": "5.28 hours"
+        },
+        {
+            "id": 9,
+            "user_id": 4,
+            "start_sleep_time": "2021-01-22T04:08:58.000Z",
+            "end_sleep_time": "2021-01-22T13:44:58.000Z",
+            "length_of_sleep": "9.6 hours"
+        },
+        {
+            "id": 10,
+            "user_id": 1,
+            "start_sleep_time": "2021-01-22T04:08:58.000Z",
+            "end_sleep_time": "2021-01-22T11:20:58.000Z",
+            "length_of_sleep": "7.2 hours"
+        },
+        {
+            "id": 11,
+            "user_id": 3,
+            "start_sleep_time": "2021-01-22T04:08:58.000Z",
+            "end_sleep_time": "2021-01-22T09:54:34.000Z",
+            "length_of_sleep": "5.76 hours"
+        },
+        {
+            "id": 12,
+            "user_id": 2,
+            "start_sleep_time": "2021-01-22T04:08:58.000Z",
+            "end_sleep_time": "2021-01-22T09:25:46.000Z",
+            "length_of_sleep": "5.28 hours"
+        },
+        {
+            "id": 13,
+            "user_id": 4,
+            "start_sleep_time": "2021-01-21T04:08:58.000Z",
+            "end_sleep_time": "2021-01-21T13:44:58.000Z",
+            "length_of_sleep": "9.6 hours"
+        },
+        {
+            "id": 14,
+            "user_id": 1,
+            "start_sleep_time": "2021-01-21T04:08:58.000Z",
+            "end_sleep_time": "2021-01-21T11:20:58.000Z",
+            "length_of_sleep": "7.2 hours"
+        },
+        {
+            "id": 15,
+            "user_id": 3,
+            "start_sleep_time": "2021-01-21T04:08:58.000Z",
+            "end_sleep_time": "2021-01-21T09:54:34.000Z",
+            "length_of_sleep": "5.76 hours"
+        },
+        {
+            "id": 16,
+            "user_id": 2,
+            "start_sleep_time": "2021-01-21T04:08:58.000Z",
+            "end_sleep_time": "2021-01-21T09:25:46.000Z",
+            "length_of_sleep": "5.28 hours"
+        }
+    ]
+}
+```
 
-    def url
-      'http://therecord.co/feed.json'
-    end
-  end
-end
+
+### 2. Users can follow and unfollow other users.
+
+- **User_id_4 follow user_id_1**
+
+```json
+curl --location --request POST 'http://localhost:3000/follows' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjNTkzNmVjNyJ9.QA3Gcvy27GAum1y2L_f_YbYJsuDmuYTzKf7i_qtaNW0' \
+--header 'Cookie: next-i18next=en' \
+--data-raw '{
+    "user_id": 4,
+    "following_id": 1
+}'
+
+
+{
+    "data": {
+        "id": 7,
+        "user_id": 4,
+        "following_id": 1
+    }
+}
+```
+
+- **User_id_4 unfollow user_id_1**
+
+```json
+curl --location --request DELETE 'http://localhost:3000/follows/6' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjNTkzNmVjNyJ9.QA3Gcvy27GAum1y2L_f_YbYJsuDmuYTzKf7i_qtaNW0' \
+--header 'Cookie: next-i18next=en' 
+
+Status: 204
+```
+
+### 3. See the sleep records over the past week for their friends, ordered by the length of their sleep.
+
+```json
+curl --location --request GET 'http://localhost:3000/users/1/friend_sleeps' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjNTkzNmVjNyJ9.QA3Gcvy27GAum1y2L_f_YbYJsuDmuYTzKf7i_qtaNW0' \
+--header 'Cookie: next-i18next=en' \
+--data-raw ''
+
+[
+    {
+        "id": 3,
+        "email": "justin@gmail.com",
+        "total_sleep_last_week": 40.32
+    },
+    {
+        "id": 2,
+        "email": "steve@gmail.com",
+        "total_sleep_last_week": 36.96
+    }
+]
 ```
