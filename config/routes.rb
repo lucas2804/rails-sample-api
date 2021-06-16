@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     end
   end
   resources :follows
-  root :to => "users#collect_name"
+  root :to => "users#healthz"
   get '/healthz' => "users#healthz"
   resources :users do
     collection do
