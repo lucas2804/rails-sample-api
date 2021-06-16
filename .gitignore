@@ -26,3 +26,7 @@ coverage
 k8s
 .env.development
 client-secret.json
+mykey.pem
+client-secret.json
+client-secret.json.enc
+mycli_credentials.csv
