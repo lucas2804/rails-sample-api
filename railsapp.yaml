@@ -9,11 +9,11 @@ Parameters:
 Mappings:
   RegionMap:
     'ap-south-1':
-      AMI: 'ami-0a042cb76e10c7aa0'
+      AMI: 'ami-0e591d33109bd8a88'
     'us-east-1':
-      AMI: 'ami-0a042cb76e10c7aa0'
+      AMI: 'ami-0e591d33109bd8a88'
     'us-east-2':
-      AMI: 'ami-0a042cb76e10c7aa0'
+      AMI: 'ami-0e591d33109bd8a88'
 Resources:
   VPC:
     Type: 'AWS::EC2::VPC'
@@ -136,7 +136,7 @@ Resources:
       - CidrIp: '0.0.0.0/0'
         FromPort: 80
         IpProtocol: tcp
-        ToPort: 3000
+        ToPort: 80
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -224,12 +224,10 @@ Resources:
             '/root/wordpress.sh':
               content: !Sub |
                 #!/bin/bash -ex
-                  source /home/ubuntu/.rvm/scripts/rvm
-                  rvm use --default 2.6.3
+                  echo "Start rails api in wordpress.sh"
+                  pwd >> ldemo_log
                   cd /home/ubuntu/rails-sample-api
-                  git pull origin >> ldemo_log
-                  bundle install >> ldemo_log
-                  rails server -b 0.0.0.0 -d
+                  rails server -b 0.0.0.0 -p 80 -d
               mode: 000500
               owner: root
               group: root
@@ -253,12 +251,14 @@ Resources:
       UserData:
         'Fn::Base64': !Sub |
           #!/bin/bash -ex
-          bash -ex << "TRY"
+            echo "Start rails api in UserData"
+            source "/usr/local/rvm/scripts/rvm"
+            rvm use --default 2.6.3
+            ruby -v
             cd /home/ubuntu/rails-sample-api
-            git pull origin >> ldemo_log
-            bundle install >> ldemo_log
-            rails server -b 0.0.0.0 -d
-          TRY
+            export HOME=/home/ubuntu/rails-sample-api
+            echo "export HOME=/home/ubuntu/rails-sample-api"
+            rails server -b 0.0.0.0 -p 80 -d
   AutoScalingGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     DependsOn:

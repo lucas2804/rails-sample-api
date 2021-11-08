@@ -30,3 +30,9 @@ mykey.pem
 client-secret.json
 client-secret.json.enc
 mycli_credentials.csv
+aws
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

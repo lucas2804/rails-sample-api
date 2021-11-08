@@ -22,6 +22,7 @@ gem 'will_paginate', '~> 3.1.0'
 gem 'awesome_print'
 gem 'rest-client'
 gem 'recursive-open-struct'
+gem 'newrelic_rpm'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
