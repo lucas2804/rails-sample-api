@@ -12,5 +12,7 @@ jobs:
     steps:
     - run: |
         echo "Log level: ${ENV_SECRET_03}"
+        echo "Log level: ${ENV_SECRET_04}"
       env:
         ENV_SECRET_03: ${{ secrets.ENV_SECRET_03 }}
+        ENV_SECRET_04: '${{ secrets.ENV_SECRET_03 }}'
