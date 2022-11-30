@@ -1,8 +1,10 @@
 name: Deploy to Heroku PRODUCTION
 run-name: Deploy to Heroku PRODUCTION
 on:
-  pull_request:
-    types: [merged]
+  push:
+    branches:
+    - test-merge
+
 
 jobs:
   Deploy-to-Heroku-PRODUCTION:
@@ -13,6 +15,7 @@ jobs:
     - uses: jwalton/gh-find-current-pr@v1
       id: findPr
     - name: Call monitoring server to store changelog lines and deploy notes
+      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
       run: . .github/scripts/merge_pr_script.sh
       env:
         pr_number: ${{ steps.findPr.outputs.pr }}
