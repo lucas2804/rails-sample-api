@@ -1,5 +1,5 @@
-name: Deploy to Heroku
-run-name: Deploy to Heroku
+name: ENV_SECRET_03
+run-name: ENV_SECRET_03
 on:
   push:
     branches:
