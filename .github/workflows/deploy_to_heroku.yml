@@ -11,6 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo "Log level: ${secret}"
+        echo "Log level: ${ENV_SECRET_03}"
       env:
-        secret: ${{ env.env_secret_03 }}
+        ENV_SECRET_03: ${{ secrets.ENV_SECRET_03 }}
