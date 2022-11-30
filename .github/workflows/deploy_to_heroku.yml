@@ -9,10 +9,11 @@ on:
 jobs:
   Deploy-to-Heroku:
     runs-on: ubuntu-latest
+    environment: env_secret_01
     steps:
     - run: |
-        echo "Log level: ${ENV_SECRET_03}"
-        echo "Log level: ${ENV_SECRET_04}"
+        echo "ENV_SECRET_03: ${ENV_SECRET_03}"
+        echo "REPO_SECRET: ${REPO_SECRET}"
       env:
         ENV_SECRET_03: ${{ secret.ENV_SECRET_03 }}
-        ENV_SECRET_04: '${{ secret.ENV_SECRET_03 }}'
+        REPO_SECRET: ${{ secret.REPO_SECRET }}
