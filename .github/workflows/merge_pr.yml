@@ -1,0 +1,22 @@
+name: Deploy to Heroku PRODUCTION
+run-name: Deploy to Heroku PRODUCTION
+on:
+  pull_request:
+    types: [merged]
+
+jobs:
+  Deploy-to-Heroku-PRODUCTION:
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: jwalton/gh-find-current-pr@v1
+      id: findPr
+    - name: Call monitoring server to store changelog lines and deploy notes
+      run: . .github/scripts/merge_pr_script.sh
+      env:
+        pr_number: ${{ steps.findPr.outputs.pr }}
+        pr_body: ${{ steps.findPr.outputs.body }}
+        pr_title: ${{ steps.findPr.outputs.title }}
+        pr_author: ${{ github.triggering_actor }}
+        MONITORING_SERVER_URL: ${{ secrets.MONITORING_SERVER_URL }}
