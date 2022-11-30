@@ -1,0 +1,16 @@
+name: Deploy to Heroku
+run-name: Deploy to Heroku
+on:
+  push:
+    branches:
+    - main
+    - '*'
+
+jobs:
+  Deploy-to-Heroku:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo "Log level: ${secret}"
+      env:
+        secret: ${{ secrets.test_env }}
