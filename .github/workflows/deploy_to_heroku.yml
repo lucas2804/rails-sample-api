@@ -15,5 +15,5 @@ jobs:
         echo "ENV_SECRET_03: ${ENV_SECRET_03}"
         echo "REPO_SECRET: ${REPO_SECRET}"
       env:
-        ENV_SECRET_03: ${{ secret.ENV_SECRET_03 }}
-        REPO_SECRET: ${{ secret.REPO_SECRET }}
+        ENV_SECRET_03: ${{ secrets.ENV_SECRET_03 }}
+        REPO_SECRET: ${{ secrets.REPO_SECRET }}
