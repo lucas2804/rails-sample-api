@@ -9,13 +9,13 @@ on:
 jobs:
   Deploy-to-Heroku-PRODUCTION:
     environment: production
+    if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - uses: jwalton/gh-find-current-pr@v1
       id: findPr
     - name: Call monitoring server to store changelog lines and deploy notes
-      if: github.event.pull_request.merged == true
       run: . .github/scripts/merge_pr_script.sh
       env:
         pr_number: ${{ steps.findPr.outputs.pr }}
