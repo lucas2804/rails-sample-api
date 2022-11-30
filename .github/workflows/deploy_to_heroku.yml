@@ -13,4 +13,4 @@ jobs:
     - run: |
         echo "Log level: ${secret}"
       env:
-        secret: ${{ secrets.env_secret_03 }}
+        secret: ${{ env.env_secret_03 }}
