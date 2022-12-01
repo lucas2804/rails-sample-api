@@ -5,7 +5,7 @@ on:
     types:
     - closed
     branches:
-    - staging # targeted branch
+    - staging # targeted branch test
     - test
 jobs:
   merge-code-to-staging:
