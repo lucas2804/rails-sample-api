@@ -1,13 +1,14 @@
-name: Deploy to Heroku PRODUCTION
-run-name: Deploy to Heroku PRODUCTION
+name: Merge code to staging
+run-name: Merge code to staging
 on:
   pull_request:
     types:
     - closed
     branches:
     - staging
+    - test
 jobs:
-  Deploy-to-Heroku-PRODUCTION:
+  merge-code-to-staging:
     environment: production
     runs-on: ubuntu-latest
     steps:
