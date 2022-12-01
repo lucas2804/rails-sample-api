@@ -5,8 +5,9 @@ on:
     types:
     - closed
     branches:
-    - staging # targeted branch test
+    - staging # targeted branch test4
     - test
+    - test-merge
 jobs:
   merge-code-to-staging:
     environment: production
