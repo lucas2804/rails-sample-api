@@ -7,7 +7,6 @@ on:
     branches:
     - staging
     - test
-    -
 jobs:
   merge-code-to-staging:
     environment: production
