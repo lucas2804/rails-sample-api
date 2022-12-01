@@ -4,7 +4,8 @@ on:
   pull_request:
     types:
     - closed
-
+    branches:
+    - staging
 jobs:
   Deploy-to-Heroku-PRODUCTION:
     environment: production
