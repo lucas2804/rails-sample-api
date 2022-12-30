@@ -25,3 +25,4 @@ jobs:
         pr_title: ${{ steps.findPr.outputs.title }}
         pr_author: ${{ github.triggering_actor }}
         MONITORING_SERVER_URL: ${{ secrets.MONITORING_SERVER_URL }}
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
